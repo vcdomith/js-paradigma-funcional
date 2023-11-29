@@ -2,6 +2,8 @@ import { timeoutPromise, delay, retry } from "./utils/promise-helpers.js"
 import './utils/array-helpers.js'
 import { notasService as service } from "./nota/servico.js"
 import { debounceTime, takeUntil, pipe, partialize } from "./utils/operators.js"
+import { EventEmitter } from "./utils/event-emitter.js"
+import { Maybe } from "./utils/maybe.js"
 
 // const sumItems = notas => notas
 //     .$flatMap(nota => nota.itens)
@@ -17,7 +19,7 @@ const operations = pipe(
 
 const action = operations(() => 
     retry(3, 3000, () => timeoutPromise(200, service.sumItems('2143')))
-    .then(console.log)
+    .then(total => EventEmitter.emit('itensTotalizados', total))
     .catch(console.log)    
 ) 
 
