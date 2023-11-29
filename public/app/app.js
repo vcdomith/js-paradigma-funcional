@@ -1,4 +1,4 @@
-import { timeoutPromise } from "./utils/promise-helpers.js"
+import { timeoutPromise, delay, retry } from "./utils/promise-helpers.js"
 import './utils/array-helpers.js'
 import { notasService as service } from "./nota/servico.js"
 import { debounceTime, takeUntil, pipe, partialize } from "./utils/operators.js"
@@ -16,7 +16,7 @@ const operations = pipe(
 )
 
 const action = operations(() => 
-    timeoutPromise(200, service.sumItems('2143'))
+    retry(3, 3000, () => timeoutPromise(200, service.sumItems('2143')))
     .then(console.log)
     .catch(console.log)    
 ) 
